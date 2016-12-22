@@ -13,11 +13,13 @@ In later stages, some enemies even break from an entering group in a frantic att
 I Decided to remake MSX version as i'm learning games programming with SDL & Open GL.
 
 <strong>To Do List :</strong>
+
 -Generate cmakelists 
+
 -Generate other stages
 
  
- Required Libraries
+<strong> Required Libraries </strong>
  - SDL2
  - SDL2_image
  - SDL2_mixer
