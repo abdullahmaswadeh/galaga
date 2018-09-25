@@ -14,8 +14,6 @@ I Decided to remake MSX version as i'm learning games programming with SDL & Ope
 
 <strong>To Do List :</strong>
 
--Generate cmakelists 
-
 -Generate other stages
 
  
