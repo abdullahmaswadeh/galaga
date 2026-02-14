@@ -28,12 +28,11 @@ void  StarsField::initSpace() {
 }
 
 void StarsField::Render() {
+	glDisable(GL_DEPTH_TEST);
 	for (unsigned int i = 0;i<starsField.size();i++) {
-		//glDisable(GL_DEPTH);
-		glClear(GL_DEPTH_BUFFER_BIT);
 		starsField[i].draw();
-		//
 	}
+	glEnable(GL_DEPTH_TEST);
 }
 
 float StarsField::getNewSpeed(){
@@ -103,8 +102,8 @@ void  StarsField::moveStarsfield(rect &star) {
 		return;
 	}
 
-	if (star.x == 0) star.x += 1.0f;
-	if (star.y == 0) star.y += 1.0f;
+	if (star.x < 1.0f) star.x = 1.0f;
+	if (star.y < 1.0f) star.y = 1.0f;
 
 	/*GLfloat theta = atan2(0.0f - star.y, 0.0f - star.x);
 	GLfloat distance = Distance(star.x, star.y, 0.0f, 0.0f);

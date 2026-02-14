@@ -34,10 +34,10 @@ float CalcShortestRot(float from, float to)
 		to += 2.0f*(float)M_PI;
 	}
 
-	// Do not rotate if from == to.
-	if ((from == to ||
-		from == 0) && (to == 2.0f*(float)M_PI ||
-		from == 2.0f*(float)M_PI) && to == 0)
+	// Do not rotate if from == to or wrapping around full circle.
+	if (from == to ||
+		(from == 0 && to == 2.0f*(float)M_PI) ||
+		(from == 2.0f*(float)M_PI && to == 0))
 	{
 		return 0;
 	}
@@ -317,7 +317,7 @@ void pullRocket(GameObject *obj) {
 		StageM::pullR.frame = -1;
 		StageM::pullR.render = false;
 
-		if (r->y == 545.0f) {
+		if (r->y >= 545.0f) {
 			ship->PatternQueue.push_back(Elements::patterns.findPath2);
 			ship->cur_cmd++;
 			state = 0;
@@ -572,8 +572,10 @@ void dumpRocket(bool reset) {
 	if (reset) {
 		dt.reset();
 		state = 0;
-		Ship *ship = static_cast<Ship*>(r->capShip);
-		ship->rocket = nullptr;
+		if (r->capShip != nullptr) {
+			Ship *ship = static_cast<Ship*>(r->capShip);
+			ship->rocket = nullptr;
+		}
 		r->capShip = nullptr;
 		return;
 	}
@@ -582,7 +584,7 @@ void dumpRocket(bool reset) {
 	if (!r->enabled) state = 2;
 
 	if (dt.checkFrameEnd(1000) && state == 0) {
-		if (r->capShip->slot == 0 || r->capShip->slot == 1) {
+		if (r->capShip != nullptr && (r->capShip->slot == 0 || r->capShip->slot == 1)) {
 			r->setPatternQueue(Elements::patterns.BossAttackLeft);
 		}
 		else {

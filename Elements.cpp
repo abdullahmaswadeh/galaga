@@ -218,7 +218,7 @@ void Elements::Update() {
 	}
 
 
-	for (int i = 0; i < (int)bullets.size(); i++) {
+	for (int i = (int)bullets.size() - 1; i >= 0; i--) {
 
 		bullets[i].Update();
 
@@ -229,13 +229,11 @@ void Elements::Update() {
 		}
 	}
 
-	if ((int)Shipsbullets.size() > 0) {
-		for (int i = 0; i < (int)Shipsbullets.size(); i++) {
-			Shipsbullets[i].Update();
-			if (Shipsbullets[i].y < 0 || Shipsbullets[i].y > CCFG::SCREEN_HEIGHT ||
-				Shipsbullets[i].x < 0 || Shipsbullets[i].x > 630.0f) {
-				Shipsbullets.erase(Shipsbullets.begin() + i);
-			}
+	for (int i = (int)Shipsbullets.size() - 1; i >= 0; i--) {
+		Shipsbullets[i].Update();
+		if (Shipsbullets[i].y < 0 || Shipsbullets[i].y > CCFG::SCREEN_HEIGHT ||
+			Shipsbullets[i].x < 0 || Shipsbullets[i].x > 630.0f) {
+			Shipsbullets.erase(Shipsbullets.begin() + i);
 		}
 	}
 
@@ -518,9 +516,7 @@ void Elements::shoot() {
 
 void Elements::SwapRockets() {
 
-	Rocket r = Elements::rocket[0];
-	Elements::rocket[0] = Elements::rocket[1];
-	Elements::rocket[1] = r;
+	std::swap(Elements::rocket[0], Elements::rocket[1]);
 
 }
 

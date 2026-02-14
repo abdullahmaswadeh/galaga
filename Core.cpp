@@ -11,7 +11,7 @@ bool CCore::quitGame = false;
 bool CCore::keyLeft = false;
 bool CCore::keyRight = false;
 bool CCore::spaceKey = false;
-Game* CCore::game = new Game();
+Game* CCore::game = nullptr;
 
 CCore::CCore(void)
 {
@@ -25,12 +25,10 @@ CCore::CCore(void)
     }
     else
     {
-        glEnable(GL_MULTISAMPLE);
-
         //Attributes
         SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
@@ -68,6 +66,8 @@ CCore::CCore(void)
             }
             else
             {
+                glEnable(GL_MULTISAMPLE);
+
                 //Initialize GLEW
                 glewExperimental = GL_TRUE;
                 GLenum glewError = glewInit();

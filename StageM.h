@@ -81,6 +81,7 @@ public:
 
 	void attack();
 	int findBySlot(int index);
+	static int slotToShip[numShips];
 	static void parkAll();
 	static void nextStage();
 	static void exp(GLfloat x, GLfloat y, LTexture *tex = &Resources::exp);

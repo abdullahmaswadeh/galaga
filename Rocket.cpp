@@ -198,7 +198,7 @@ void Rocket::shootBullet() {
 	else {
 		b.theta = 0.0f;
 	}
-	
+
 
 	b.x = cx;
 	b.y = cy;

@@ -22,49 +22,25 @@ bool LTexture::loadFromFile(std::string path)
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    SDL_Surface *surface; // this surface will tell us the details of the image
-    if ((surface = IMG_Load((Resources::getImage(path)).c_str())))
+    SDL_Surface *loaded; // this surface will tell us the details of the image
+    if ((loaded = IMG_Load((Resources::getImage(path)).c_str())))
     {
-        // Check that the image's width is a power of 2
+        // Convert surface to RGBA to handle all formats (indexed, RGB, BGRA, etc.)
+        SDL_Surface *surface = SDL_ConvertSurfaceFormat(loaded, SDL_PIXELFORMAT_RGBA32, 0);
+        SDL_FreeSurface(loaded);
+
+        if (!surface) {
+            printf("SDL could not convert surface: %s\n", SDL_GetError());
+            return false;
+        }
 
         mWidth = surface->w;
         mHeight = surface->h;
         cellWidth = (float)mWidth;
         cellHeight = (float)mHeight;
 
-        if ((surface->w & (surface->w - 1)) != 0)
-        {
-            //printf("warning: image width is not a power of 2\n");
-        }
-        // Also check if the height is a power of 2
-        if ((surface->h & (surface->h - 1)) != 0)
-        {
-            //printf("warning: image height is not a power of 2\n");
-        }
-        //get number of channels in the SDL surface
-        nofcolors = surface->format->BytesPerPixel;
-
-        //contains an alpha channel
-        if (nofcolors == 4)
-        {
-            if (surface->format->Rmask == 0x000000ff)
-                texture_format = GL_RGBA;
-            else
-                texture_format = GL_BGRA;
-        }
-        else if (nofcolors == 3) //no alpha channel
-        {
-            if (surface->format->Rmask == 0x000000ff)
-                texture_format = GL_RGB;
-            else
-                texture_format = GL_BGR;
-        }
-        else
-        {
-            printf("warning: the image is not truecolor...this will break ");
-        }
-
-
+        nofcolors = 4;
+        texture_format = GL_RGBA;
 
         // Have OpenGL generate a texture object handle for us
         glGenTextures(1, &texture);
@@ -73,22 +49,19 @@ bool LTexture::loadFromFile(std::string path)
         // Set the texture's stretching properties
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glPixelStorei(GL_UNPACK_ROW_LENGTH, surface->pitch / surface->format->BytesPerPixel);
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0,
+                     GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+        glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, nofcolors, surface->w, surface->h, 0,
-                     texture_format, GL_UNSIGNED_BYTE, surface->pixels);
+        SDL_FreeSurface(surface);
     }
     else
     {
-        printf("SDL could not load image.bmp: %s\n", SDL_GetError());
-        SDL_Quit();
-        return 1;
+        printf("SDL could not load image: %s\n", SDL_GetError());
+        return false;
     }
-    // Free the SDL_Surface only if it was successfully created
-    if (surface)
-    {
-        SDL_FreeSurface(surface);
-    }
-
 
     return success;
 }
@@ -155,7 +128,7 @@ void LTexture::render(GLfloat x, GLfloat y, float color[3])
     glDisable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
 
-    glBindTexture(texture, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 
@@ -203,7 +176,7 @@ void LTexture::renderCenter(GLfloat x, GLfloat y, float color[3], GLfloat angle)
     glDisable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
 
-    glBindTexture(texture, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 //Render Frame / Center origin
@@ -247,7 +220,7 @@ void LTexture::renderFrame(int frame, float x, float y, GLfloat angle)
     glDisable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
 
-    glBindTexture(texture, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
 }
 

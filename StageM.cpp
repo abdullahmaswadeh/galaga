@@ -9,6 +9,7 @@
 StageM::Slot StageM::slots[numShips] = {};
 Ship StageM::ships[numShips] = {};
 int StageM::state = 0;
+int StageM::slotToShip[numShips] = {};
 int StageM::stage = 1;
 int StageM::parkedElements = 0;
 std::vector<StageM::Aexp> StageM::exps;
@@ -170,6 +171,11 @@ void StageM::initSlots() {
 	StageM::ships[37].slot = 38;
 	StageM::ships[38].slot = 30;
 	StageM::ships[39].slot = 39;
+
+	// Build reverse lookup: slot index -> ship index
+	for (int i = 0; i < numShips; i++) {
+		slotToShip[ships[i].slot] = i;
+	}
 }
 
 //Animate Texures
@@ -552,19 +558,14 @@ void StageM::pushMiniScore(GLfloat x, GLfloat y, unsigned int val, float color[3
 }
 
 void StageM::UpdateExpsFrame() {
-	for (int j = 0; j < (int)exps.size(); j++) {
+	for (int j = (int)exps.size() - 1; j >= 0; j--) {
 
 		exps[j].t.start();
 		if (exps[j].t.checkFrameEnd(100)) {
 			exps[j].frame++;
 			exps[j].t.reset();
 			if (exps[j].frame > exps[j].maxFrame) {
-				try {
-					exps.erase(exps.begin() + j);
-				}
-				catch (std::exception) {
-					exps.clear();
-				}
+				exps.erase(exps.begin() + j);
 			}
 		}
 
@@ -572,7 +573,7 @@ void StageM::UpdateExpsFrame() {
 }
 void StageM::renderMiniScores() {
 
-	for (int i = 0; i < (int)miniScores.size(); i++) {
+	for (int i = (int)miniScores.size() - 1; i >= 0; i--) {
 		miniScores[i].t.start();
 
 		Resources::miniScore.setText(std::to_string(miniScores[i].value));
@@ -674,13 +675,7 @@ void StageM::checkCollision() {
 
 
 
-							int s;
-							if (x == 0 || x == 2) {
-								s = x + 1;
-							}
-							else if(x == 1 || x == 3) {
-								s = x - 1;
-							}
+							int s = (x % 2 == 0) ? x + 1 : x - 1;
 
 
 							for (int j = 0; j < numShips; j++) {
@@ -958,13 +953,9 @@ void StageM::attack() {
 }
 
 int StageM::findBySlot(int index) {
-
-	for (int i = 0; i < numShips; i++) {
-		if (ships[i].slot == index) {
-			return i;
-		}
+	if (index >= 0 && index < numShips) {
+		return slotToShip[index];
 	}
-
 	return -1;
 }
 

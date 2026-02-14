@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.5)
 set (CMAKE_CXX_STANDARD 11)
 
 project(galaga)
@@ -16,7 +16,7 @@ find_package(GLEW REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_MIXER_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS})
 
 add_executable(galaga Bullet.cpp CFG.cpp Core.cpp Elements.cpp Formations.cpp Game.cpp LevelsElement.cpp Music.cpp Objects.cpp Patterns.cpp Resources.cpp Rocket.cpp Ship.cpp StageM.cpp Text.cpp main.cpp physix.cpp shapes.cpp stages.cpp starsField.cpp texture.cpp timer.cpp)
-target_link_libraries(galaga ${SDL2_LIBRARIES} ${SDL2_MIXER_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
+target_link_libraries(galaga ${SDL2_LIBRARIES} ${SDL2_MIXER_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${OPENGL_LIBRARIES} GLEW::GLEW)
 
 install(TARGETS galaga DESTINATION bin)
 

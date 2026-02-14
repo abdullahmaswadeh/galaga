@@ -173,8 +173,6 @@ void Ship::draw() {
 
 void Ship::newRandomShots(int startRange , int endRange) {
 
-	srand((int)time(0));
-
 	int shots = rand() % 3;
 	if (StageM::stage == 5) shots += 1;
 

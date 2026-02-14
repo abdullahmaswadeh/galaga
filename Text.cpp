@@ -7,7 +7,6 @@ Text2D::Text2D() {
 
 Text2D::~Text2D() {
 	glDeleteTextures(1, &texture);
-	//SDL_FreeSurface(sFont);
 };
 
 
@@ -54,7 +53,10 @@ void Text2D::loadFont(std::string file, SDL_Color color, int size, std::string m
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, sFont->pitch / sFont->format->BytesPerPixel);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sFont->w, sFont->h, 0, GL_BGRA, GL_UNSIGNED_BYTE, sFont->pixels);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 
 };
 
@@ -76,7 +78,10 @@ void Text2D::setText(std::string message) {
 	//Set OpenGl Color
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, sFont->pitch / sFont->format->BytesPerPixel);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sFont->w, sFont->h, 0, GL_BGRA, GL_UNSIGNED_BYTE, sFont->pixels);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 }
 
 void Text2D::render() {

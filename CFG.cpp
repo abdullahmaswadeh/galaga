@@ -15,7 +15,7 @@ Music* CCFG::Sounds = new Music();
 bool CCFG::muteMusic = false;
 bool CCFG::muteSounds = false;
 
-bool CCFG::fullScreen = true;
+bool CCFG::fullScreen = false;
 
 float CCFG::interpolation = 0.0;
 bool CCFG::controlsEnabled = true;
